@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+{% extends "first_app/base.html" %}
+{% load static %}
+    {% block body_block %}
+        <div class="container">
+            <div class="jumbotron">
+                <h1>Hi welcome to Index!</h1>
+                <h1>This is index.html page showing!</h1>
+                <h2>Here are your access records:</h2>
+            </div>
+        </div>
+
+        <div class="djangtwo">
+            {% if access_records %}
+                <table>
+                    <thead>
+                        <th>Site Name</th>
+                        <th>Date Accessed</th>
+                    </thead>
+
+                    {% for acc in access_records %}
+                    <tr>
+                        <td>{{ acc.name|upper|cut:'-' }}</td>
+                        <td>{{ acc.date|date:"m-d-Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>NO ACCESS RECORDS FOUND!</p>
+            {% endif %}
+        </div>
+    {% endblock %}
