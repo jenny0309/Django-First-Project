@@ -18,8 +18,9 @@ from django.urls import path, include
 from first_app import views, urls
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('first_app/', include('first_app.urls')),
+    path('', views.IndexView.as_view(), name='index'),
+    path('first_app/', include('first_app.urls', namespace='first_app')),
     path('admin/', admin.site.urls),
-    path('logout/', views.user_logout, name='logout')
+    path('logout/', views.user_logout, name='logout'),
+    path('test/', views.CBView.as_view())
 ]

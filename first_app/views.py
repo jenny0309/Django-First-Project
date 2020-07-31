@@ -6,11 +6,53 @@ from first_app.forms import UserForm, UserProfileInfoForm
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.http import HttpResponse
+from . import models
 
+# Class-based View
+class CBView(View):
+    def get(self, request):
+        return HttpResponse("CLASS BASED VIEWS ARE COOL!")
+
+class IndexView(TemplateView):
+    template_name = 'first_app/index.html'
+
+    def get_context_data(self, **kwargs):
+        # *args <- give all function parameters as a tuple
+        # **kwargs <- give all keyword arguments except for those corresponding parameter as a dictionary
+        webpages_list = AccessRecord.objects.order_by('date')
+        context = super().get_context_data(**kwargs)
+        context['access_records'] = webpages_list
+        return context
+
+# ListView and DetailView are automatically connected with primary key!
+class SchoolListView(ListView):
+    context_object_name = 'schools'
+    model = models.School # connected to model
+
+class SchoolDetailView(DetailView):
+    context_object_name = 'school_detail'
+    model = models.School
+    template_name = 'first_app/school_detail.html'
+
+class SchoolCreateView(CreateView):
+    # school_form.html and get_absolute_url should be defined
+    fields = ('name', 'principal', 'location') # the data fields should be clarified in CreateView!
+    model = models.School
+
+class SchoolUpdateView(UpdateView):
+    fields = ('name', 'principal')
+    model = models.School
+
+class SchoolDeleteView(DeleteView):
+    model = models.School
+    success_url = reverse_lazy("first_app:list") # redirect to the page with reverse_lazy
+
+# Create your views here.
 def index(request):
     webpages_list = AccessRecord.objects.order_by('date') # import models and make queries
     date_dict = {'access_records': webpages_list}
